@@ -6,7 +6,7 @@ import Carousell from '../components/Carousell';
 import HomeSection from '../components/HomeSection';
 import { BigButton } from '../components/Buttons';
 import * as Icon from '../assets/icons';
-
+import LoginWrapper from '../components/LoginWrapper';
 import axios from 'axios';
 
 const Login = () => {
@@ -28,11 +28,13 @@ const Login = () => {
                         </h1>
                     }
                 >
-                    <input type={'text'} ref={user} />
-                    <input type={'password'} ref={pass} />
-                    <BigButton onClick={() => handleSubmit()}>
-                        LOG IN <Icon.Github />
-                    </BigButton>
+                    <LoginWrapper>
+                        <input type={'text'} ref={user} />
+                        <input type={'password'} ref={pass} />
+                        <BigButton onClick={() => handleSubmit()}>
+                            LOG IN <Icon.Github />
+                        </BigButton>
+                    </LoginWrapper>
                 </HomeSection>
                 <Carousell />
             </PageWrapper>

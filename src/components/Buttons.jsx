@@ -10,6 +10,7 @@ export const BigButton = styled('button')(() => ({
     border: 'none',
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     '&>svg': {
         fill: 'var(--w)',
         height: '35px',

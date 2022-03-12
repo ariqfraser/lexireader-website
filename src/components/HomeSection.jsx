@@ -50,7 +50,7 @@ const HomeSection = (props) => {
                             GITHUB <Icon.Github />
                         </BigButton>
                         <BigButton>
-                            SIGN IN <Icon.Github />
+                            SIGN IN <Icon.Google />
                         </BigButton>
                     </div>
                 ) : (

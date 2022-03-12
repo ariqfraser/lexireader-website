@@ -9,6 +9,7 @@ import * as Icon from '../assets/icons';
 
 import { regex } from '../utils/regex';
 import axios from 'axios';
+import LoginWrapper from '../components/LoginWrapper';
 
 const Signup = () => {
     const user = useRef();
@@ -81,24 +82,30 @@ const Signup = () => {
                         </h1>
                     }
                 >
-                    {errUser}
-                    <input type={'text'} ref={user} placeholder="username" />
-                    {errEmail}
-                    <input type={'text'} ref={email} placeholder="email" />
-                    {errPass}
-                    <input
-                        type={'password'}
-                        ref={pass}
-                        placeholder="password"
-                    />
-                    <input
-                        type={'password'}
-                        ref={passC}
-                        placeholder="confirm password"
-                    />
-                    <BigButton onClick={() => handleSubmit()}>
-                        LOG IN <Icon.Github />
-                    </BigButton>
+                    <LoginWrapper>
+                        {errUser}
+                        <input
+                            type={'text'}
+                            ref={user}
+                            placeholder="username"
+                        />
+                        {errEmail}
+                        <input type={'text'} ref={email} placeholder="email" />
+                        {errPass}
+                        <input
+                            type={'password'}
+                            ref={pass}
+                            placeholder="password"
+                        />
+                        <input
+                            type={'password'}
+                            ref={passC}
+                            placeholder="confirm password"
+                        />
+                        <BigButton onClick={() => handleSubmit()}>
+                            LOG IN <Icon.Github />
+                        </BigButton>
+                    </LoginWrapper>
                 </HomeSection>
                 <Carousell />
             </PageWrapper>
