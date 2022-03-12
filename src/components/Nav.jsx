@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import { Button } from './Buttons';
+import { Link } from 'react-router-dom';
 
 const Nav = ({ screen }) => {
     const Wrapper = styled('nav')(() => ({
@@ -11,16 +12,27 @@ const Nav = ({ screen }) => {
         zIndex: 5,
         width: '90vw',
         alignItems: 'center',
-        '&>h3': {
-            marginRight: 'auto',
-        },
         padding: '0 5vw',
+        height: 75,
+    }));
+
+    const NavLink = styled(Link)(() => ({
+        marginRight: 'auto',
+        fontWeight: 600,
+        fontSize: '1.25em',
+        textDecoration: 'none',
+        color: 'var(--b)',
+        transition: '200ms ease-in-out',
+        '&>span': { transition: 'inherit' },
+        '&:hover': {
+            '&>span': { color: 'var(--primary)' },
+        },
     }));
     return (
         <Wrapper>
-            <h3>
+            <NavLink to="/">
                 <span>Lexi</span>Reader
-            </h3>
+            </NavLink>
         </Wrapper>
     );
 };

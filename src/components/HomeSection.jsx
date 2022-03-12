@@ -1,31 +1,15 @@
-import React from 'react';
-import PageWrapper from './components/PageWrapper';
 import styled from '@emotion/styled';
-import { BigButton } from './components/Buttons';
-import * as Icon from './assets/icons';
-import Nav from './components/Nav';
-import Carousell from './components/Carousell';
+import { BigButton } from './Buttons';
+import * as Icon from '../assets/icons';
 
-const Home = () => {
-    return (
-        <>
-            <Nav screen={'home'} />
-            <PageWrapper>
-                <LeftSideText />
-                <Carousell />
-            </PageWrapper>
-        </>
-    );
-};
-
-const LeftSideText = () => {
+const HomeSection = (props) => {
     const Wrapper = styled('div')(() => ({
         inset: 0,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        '&>div>button': {
+        '&>div>div>button': {
             marginTop: 14,
         },
     }));
@@ -38,7 +22,7 @@ const LeftSideText = () => {
             '&>span': { color: 'var(--primary)' },
         },
         '&>h1': {
-            fontSize: '1.25em',
+            fontSize: props.screen === 'home' ? '1.25em' : '3.5em',
         },
         '&>h2': {
             fontSize: '3.5em',
@@ -58,20 +42,23 @@ const LeftSideText = () => {
         <Wrapper>
             <div>
                 <Container>
-                    <h1>
-                        <span>Lexi</span>Reader, a browser extension.
-                    </h1>
-                    <h2>
-                        <span>learn</span> languages <br />
-                        <span>anywhere</span> on the web.
-                    </h2>
+                    {props.screen === 'home' ? props.children : props.title}
                 </Container>
-                <BigButton>
-                    GITHUB <Icon.Github />
-                </BigButton>
+                {props.screen === 'home' ? (
+                    <div style={{ display: 'flex' }}>
+                        <BigButton style={{ marginRight: 18 }}>
+                            GITHUB <Icon.Github />
+                        </BigButton>
+                        <BigButton>
+                            SIGN IN <Icon.Github />
+                        </BigButton>
+                    </div>
+                ) : (
+                    props.children
+                )}
             </div>
         </Wrapper>
     );
 };
 
-export default Home;
+export default HomeSection;
