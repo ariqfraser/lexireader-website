@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Signup from './pages/Signup';
+import Account from './pages/Account';
+import MainNav from './components/MainNav';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -13,6 +15,9 @@ ReactDOM.render(
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/lr/" element={<MainNav />}>
+                    <Route path="account" element={<Account />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     </React.StrictMode>,
