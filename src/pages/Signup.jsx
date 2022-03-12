@@ -103,7 +103,7 @@ const Signup = () => {
                             placeholder="confirm password"
                         />
                         <BigButton onClick={() => handleSubmit()}>
-                            LOG IN <Icon.Github />
+                            SIGN UP <Icon.Play />
                         </BigButton>
                     </LoginWrapper>
                 </HomeSection>

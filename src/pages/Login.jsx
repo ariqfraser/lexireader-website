@@ -29,10 +29,21 @@ const Login = () => {
                     }
                 >
                     <LoginWrapper>
-                        <input type={'text'} ref={user} />
-                        <input type={'password'} ref={pass} />
+                        <input
+                            type={'text'}
+                            ref={user}
+                            placeholder="username / email"
+                        />
+                        <input
+                            type={'password'}
+                            ref={pass}
+                            placeholder="password"
+                        />
                         <BigButton onClick={() => handleSubmit()}>
-                            LOG IN <Icon.Github />
+                            LOG IN <Icon.Play />
+                        </BigButton>
+                        <BigButton onClick={() => handleSubmit()}>
+                            GOOGLE <Icon.Google />
                         </BigButton>
                     </LoginWrapper>
                 </HomeSection>
