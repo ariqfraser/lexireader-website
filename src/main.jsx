@@ -5,19 +5,17 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Signup from './pages/Signup';
-import Account from './pages/Account';
-import MainNav from './components/MainNav';
+import ProfilePage from './pages/ProfilePage';
 
 ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route exact path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/lr/" element={<MainNav />}>
-                    <Route path="account" element={<Account />} />
-                </Route>
+                <Route path="/u/:UID" element={<ProfilePage />} />
+                <Route path="/fc" element={<>Flashcards</>} />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>,
