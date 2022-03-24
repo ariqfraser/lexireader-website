@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 const Carousell = () => {
     const Container = styled('div')(() => ({
         inset: 0,
-        background: 'rgb(174,79,247)',
         background:
             'linear-gradient(0deg, rgba(174,79,247,1) 0%, rgba(79,195,247,1) 50%)',
         position: 'relative',

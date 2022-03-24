@@ -6,10 +6,9 @@ import Carousell from '../components/Carousell';
 import HomeSection from '../components/HomeSection';
 import { BigButton } from '../components/Buttons';
 import * as Icon from '../assets/icons';
-
-import { regex } from '../utils/regex';
 import axios from 'axios';
 import LoginWrapper from '../components/LoginWrapper';
+import { signUp } from '../utils/signUp';
 
 const Signup = () => {
     const user = useRef();
@@ -102,7 +101,7 @@ const Signup = () => {
                             ref={passC}
                             placeholder="confirm password"
                         />
-                        <BigButton onClick={() => handleSubmit()}>
+                        <BigButton onClick={() => signUp('ariq@mail.com', '')}>
                             SIGN UP <Icon.Play />
                         </BigButton>
                     </LoginWrapper>
