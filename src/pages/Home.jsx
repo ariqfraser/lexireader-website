@@ -1,11 +1,21 @@
-import React from 'react';
+import { useEffect } from 'react';
 import PageWrapper from '../components/PageWrapper';
 
 import Nav from '../components/Nav';
 import Carousell from '../components/Carousell';
 import HomeSection from '../components/HomeSection';
-
+import { getAuthState } from '../lib/authState';
 const Home = () => {
+    const [userState] = getAuthState();
+
+    useEffect(() => {
+        console.log(userState);
+    }, [userState]);
+
+    useEffect(() => {
+        console.log(userState);
+    }, []);
+
     return (
         <>
             <Nav screen={'home'} />

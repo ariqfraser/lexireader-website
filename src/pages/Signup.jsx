@@ -101,7 +101,9 @@ const Signup = () => {
                             ref={passC}
                             placeholder="confirm password"
                         />
-                        <BigButton onClick={() => signUp('ariq@mail.com', '')}>
+                        <BigButton
+                            onClick={() => signUp('ariq@mail.com', 'aaaaaaa')}
+                        >
                             SIGN UP <Icon.Play />
                         </BigButton>
                     </LoginWrapper>

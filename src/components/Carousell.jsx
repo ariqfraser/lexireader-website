@@ -39,7 +39,7 @@ const Carousell = () => {
     return (
         <Container>
             <ActionWrap>
-                <Link to="/login" style={{ textDecoration: 'none' }}>
+                {/* <Link to="/login" style={{ textDecoration: 'none' }}>
                     <Button
                         bg="white"
                         textColor="var(--w)"
@@ -53,7 +53,7 @@ const Carousell = () => {
                     <Button bg="white" isType="fill" textColor="var(--primary)">
                         SIGN UP
                     </Button>
-                </Link>
+                </Link> */}
             </ActionWrap>
             <Circle top={40} left={20} size={200} />
             <Circle bottom={-200} left={-200} size={600} />

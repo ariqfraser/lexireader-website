@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { BigButton } from './Buttons';
 import * as Icon from '../assets/icons';
+import { signInWithGoogle } from '../utils/signIn';
+import { getAuthState } from '../lib/authState';
 
 const HomeSection = (props) => {
     const Wrapper = styled('div')(() => ({
@@ -38,6 +40,9 @@ const HomeSection = (props) => {
             backgroundColor: 'var(--primary)',
         },
     }));
+
+    const [userState] = getAuthState();
+
     return (
         <Wrapper>
             <div>
@@ -45,14 +50,20 @@ const HomeSection = (props) => {
                     {props.screen === 'home' ? props.children : props.title}
                 </Container>
                 {props.screen === 'home' ? (
-                    <div style={{ display: 'flex' }}>
-                        <BigButton style={{ marginRight: 18 }}>
-                            GITHUB <Icon.Github />
-                        </BigButton>
-                        <BigButton>
-                            SIGN IN <Icon.Google />
-                        </BigButton>
-                    </div>
+                    <>
+                        {/* <BigButton style={{ marginRight: 18 }}>
+                            <Icon.Github />
+                            VIEW ON GITHUB
+                        </BigButton> */}
+                        {userState ? (
+                            <BigButton>OPEN DASHBOARD</BigButton>
+                        ) : (
+                            <BigButton onClick={signInWithGoogle}>
+                                <Icon.Google />
+                                SIGN IN
+                            </BigButton>
+                        )}
+                    </>
                 ) : (
                     props.children
                 )}

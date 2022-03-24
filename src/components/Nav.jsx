@@ -2,6 +2,9 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Button } from './Buttons';
 import { Link } from 'react-router-dom';
+import { getAuthState } from '../lib/authState';
+import { signInWithGoogle } from '../utils/signIn';
+import { logout } from '../utils/logout';
 
 const Nav = ({ screen }) => {
     const Wrapper = styled('nav')(() => ({
@@ -28,11 +31,35 @@ const Nav = ({ screen }) => {
             '&>span': { color: 'var(--primary)' },
         },
     }));
+
+    const [userState] = getAuthState();
     return (
         <Wrapper>
             <NavLink to="/">
                 <span>Lexi</span>Reader
             </NavLink>
+            {userState ? (
+                <>
+                    hello, {userState.displayName}
+                    <Button
+                        isType="outlined"
+                        bg="white"
+                        textColor="#fafafa"
+                        onClick={() => logout()}
+                    >
+                        logout
+                    </Button>
+                </>
+            ) : (
+                <Button
+                    isType="outlined"
+                    bg="white"
+                    textColor="#fafafa"
+                    onClick={signInWithGoogle}
+                >
+                    sign in with Google
+                </Button>
+            )}
         </Wrapper>
     );
 };

@@ -9,8 +9,6 @@ import * as Icon from '../assets/icons';
 import LoginWrapper from '../components/LoginWrapper';
 import axios from 'axios';
 import { signInWithGoogle } from '../utils/signIn';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../lib/init-firebase';
 
 const Login = () => {
     const user = useRef();
