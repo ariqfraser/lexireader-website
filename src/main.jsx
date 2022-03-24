@@ -14,7 +14,7 @@ ReactDOM.render(
                 <Route exact path="/" element={<Home />} />
                 {/* <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} /> */}
-                <Route path="/u/:UID" element={<ProfilePage />} />
+                <Route path="/u/" element={<ProfilePage />} />
                 <Route path="/fc" element={<>Flashcards</>} />
             </Routes>
         </BrowserRouter>

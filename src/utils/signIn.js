@@ -12,6 +12,7 @@ export const signInWithGoogle = () => {
             const user = result.user;
             // ...
             console.log('logged in', user, token);
+            window.location.href = '/u/';
         })
         .catch((error) => {
             // Handle Errors here.

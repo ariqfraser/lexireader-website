@@ -1,17 +1,22 @@
-import React, { useLayoutEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import MainNav from '../components/MainNav';
+import { getAuthState } from '../lib/authState';
 
 const ProfilePage = () => {
     // TODO
     // CHECK IF LOGGED IN
-    const UID = useParams().UID;
-
-    firebase.return(
+    // const navigate = useNavigate();
+    const [userState] = getAuthState();
+    if (!userState) {
+        const navigate = useNavigate();
+        navigate('/');
+        return null;
+    }
+    return (
         <>
             <MainNav active="profile" />
-            <div>accounts {UID}</div>
-            {sessionStorage.test === 'true' && 'logged in'}
+            <div>accounts {userState.displayName}</div>
         </>
     );
 };
