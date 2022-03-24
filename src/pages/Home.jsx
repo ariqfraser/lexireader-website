@@ -5,6 +5,7 @@ import Nav from '../components/Nav';
 import Carousell from '../components/Carousell';
 import HomeSection from '../components/HomeSection';
 import { getAuthState } from '../lib/authState';
+import { auth } from '../lib/init-firebase';
 const Home = () => {
     const [userState] = getAuthState();
 
@@ -12,9 +13,7 @@ const Home = () => {
         console.log(userState);
     }, [userState]);
 
-    useEffect(() => {
-        console.log(userState);
-    }, []);
+    useEffect(() => {}, []);
 
     return (
         <>
