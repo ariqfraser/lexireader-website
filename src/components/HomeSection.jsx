@@ -3,6 +3,7 @@ import { BigButton } from './Buttons';
 import * as Icon from '../assets/icons';
 import { signInWithGoogle } from '../utils/signIn';
 import { getAuthState } from '../lib/authState';
+import { Link } from 'react-router-dom';
 
 const HomeSection = (props) => {
     const Wrapper = styled('div')(() => ({
@@ -56,7 +57,9 @@ const HomeSection = (props) => {
                             VIEW ON GITHUB
                         </BigButton> */}
                         {userState ? (
-                            <BigButton>OPEN DASHBOARD</BigButton>
+                            <Link to="/u/">
+                                <BigButton>OPEN DASHBOARD</BigButton>
+                            </Link>
                         ) : (
                             <BigButton onClick={signInWithGoogle}>
                                 <Icon.Google />
