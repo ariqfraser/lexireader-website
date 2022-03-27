@@ -3,52 +3,95 @@ import Stats from '../components/Stats';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import MainNav from '../components/MainNav';
 import { getAuthState } from '../lib/authState';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../lib/init-firebase';
+import {
+    collection,
+    getDocs,
+    query,
+    Timestamp,
+    where,
+} from 'firebase/firestore';
+import { db, auth } from '../lib/init-firebase';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
 
-    const username = useState();
-    const joinDate = useState();
-    const practiceCount = useState();
-    const wordCount = useState();
-    const deckCount = useState();
+    const [username, setUsername] = useState('');
+    const [joinDate, setJoinDate] = useState('');
+    const [practiceCount, setPracticeCount] = useState(0);
+    const [wordCount, setWordCount] = useState(0);
+    const [deckCount, setDeckCount] = useState(0);
     const [userState] = getAuthState();
-    const [isLoaded, setIsLoaded] = useState();
 
     if (!userState) navigate('/');
+
+    const usersCollectionRef = collection(db, 'users');
+    let email = null;
     useEffect(() => {
-        // Stuff goes here
-        if (!userState) navigate('/');
-        setIsLoaded(userState);
-        console.log(userState);
+        const getUserData = async () => {
+            // if (email === null || email === undefined) {
+            //     return null;
+            // }
+            email = auth['_currentUser'].email;
+
+            console.log(email);
+            const collectionQuery = query(
+                usersCollectionRef,
+                where('email', '==', email)
+            );
+            getDocs(collectionQuery)
+                .then((data) =>
+                    data.docs.map((v) => ({
+                        data: v.data(),
+                        id: v.id,
+                    }))
+                )
+                .then((doc) => {
+                    const data = doc[0].data;
+                    setUsername(data.username);
+                    setPracticeCount(data.practiceCount);
+                    setDeckCount(data.decks.length);
+                    setWordCount(data.wordCount);
+                    let userJoinDate = data.joinDate
+                        .toDate()
+                        .getDate()
+                        .toString();
+                    userJoinDate +=
+                        '/' +
+                        (data.joinDate.toDate().getMonth() + 1).toString();
+                    userJoinDate += '/' + data.joinDate.toDate().getFullYear();
+                    setJoinDate(userJoinDate);
+                })
+                .catch((err) => console.log(err.message));
+        };
+        getUserData();
     }, [userState]);
 
-    useEffect(() => {
-        const usersCollectionRef = collection(db, 'users');
+    // Promise.resolve()
+    //     .then(() => {
+    //         return ;
+    //     })
+    //     .then((email) => {
+    //         console.log(email);
+    //         return query(usersCollectionRef, where('email', '==', email));
+    //     })
+    //     .then((query) => getDocs(query))
+    //     .then((data) =>
+    //         data.docs.map((v) => ({
+    //             data: v.data(),
+    //             id: v.id,
+    //         }))
+    //     )
 
-        Promise.resolve()
-            .then(() => {
-                return userState['email'];
-            })
-            .then((email) => {
-                console.log(email);
-                return query(usersCollectionRef, where('email', '==', email));
-            })
-            .then((query) => getDocs(query))
-            .then(console.log)
-            .catch((err) => console.log(err));
-    }, [isLoaded]);
+    //     .catch((err) => console.log(err));
 
     return (
         <>
             <Stats
-                joinDate={'26/03/2022'}
-                username={'Ariq Fraser'}
-                wordCount={0}
-                deckCount={0}
-                practiceCount={0}
+                joinDate={joinDate}
+                username={username}
+                wordCount={wordCount}
+                deckCount={deckCount}
+                practiceCount={practiceCount}
             />
             <MainNav active="profile" />
             {/* <div>accounts {userState && userState.displayName}</div> */}
