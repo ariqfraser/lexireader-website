@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { useRef, useEffect } from 'react';
+import { Search } from '../assets/icons';
 
 const SearchBar = () => {
     const formRef = useRef();
@@ -14,10 +15,17 @@ const SearchBar = () => {
             borderRadius: 32,
             border: 'none',
         },
-        '>button': {
+        '&>button': {
             position: 'absolute',
+            height: '100%',
             top: 0,
             right: 0,
+            border: 'none',
+            cursor: 'pointer',
+            backgroundColor: 'transparent',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         },
     }));
     useEffect(() => {
@@ -35,7 +43,9 @@ const SearchBar = () => {
     return (
         <Wrapper ref={formRef}>
             <input type="text" placeholder="Search deck title..." />
-            <button type="submit">SEARCH</button>
+            <button type="submit" aria-label="Search button">
+                <Search />
+            </button>
         </Wrapper>
     );
 };
