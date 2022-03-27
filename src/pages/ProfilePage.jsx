@@ -94,7 +94,6 @@ const ProfilePage = () => {
                 practiceCount={practiceCount}
             />
             <MainNav active="profile" />
-            {/* <div>accounts {userState && userState.displayName}</div> */}
         </>
     );
 };

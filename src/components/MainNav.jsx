@@ -16,18 +16,21 @@ const MainNav = ({ active = '' }) => {
     const Container = styled('div')(() => ({
         display: 'flex',
         alignItems: 'center',
-        padding: '24px 24px',
+        minWidth: 320,
+        justifyContent: 'space-evenly',
         borderRadius: '100px',
-        '&>a>button, >button': {
-            margin: '0 24px',
+        '&>a>button, &>button': {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            justifyContent: 'center',
             border: 'none',
             backgroundColor: 'transparent',
             cursor: 'pointer',
+            height: 56,
             '&>svg': {
-                height: 32,
+                height: 24,
+                width: 'auto',
             },
         },
         backgroundColor: 'var(--w)',
