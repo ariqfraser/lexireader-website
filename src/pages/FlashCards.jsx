@@ -94,10 +94,12 @@ const CreateBtn = () => {
         },
     }));
 
-    function handleClick() {}
+    function handleClick() {
+        window.location.href = '/';
+    }
 
     return (
-        <Button aria-label="Create a new deck" onClick={() => handleClick}>
+        <Button aria-label="Create a new deck" onClick={() => handleClick()}>
             <span id={'createDeckText'}>Create new deck</span> <Add />
         </Button>
     );

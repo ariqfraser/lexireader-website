@@ -17,6 +17,7 @@ ReactDOM.render(
                 <Route path="/signup" element={<Signup />} /> */}
                 <Route path="/u/" element={<ProfilePage />} />
                 <Route path="/fc" element={<FlashCardPage />} />
+                <Route path="/fc/deck/:deckTitle" element={<FlashCardPage />} />
             </Routes>
         </BrowserRouter>
     </React.StrictMode>,
