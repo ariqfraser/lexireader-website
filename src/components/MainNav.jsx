@@ -2,6 +2,7 @@ import React from 'react';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import * as Icon from '../assets/icons';
+import { logout } from '../utils/logout';
 
 const MainNav = ({ active = '' }) => {
     const Wrapper = styled('div')(() => ({
@@ -17,7 +18,7 @@ const MainNav = ({ active = '' }) => {
         alignItems: 'center',
         padding: '24px 24px',
         borderRadius: '100px',
-        '&>a>button': {
+        '&>a>button, >button': {
             margin: '0 24px',
             display: 'flex',
             flexDirection: 'column',
@@ -50,6 +51,10 @@ const MainNav = ({ active = '' }) => {
                         <Icon.User />
                     </button>
                 </Link>
+
+                <button onClick={logout}>
+                    <Icon.Logout />
+                </button>
             </Container>
         </Wrapper>
     );
