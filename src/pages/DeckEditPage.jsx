@@ -14,6 +14,7 @@ import {
     collection,
     setDoc,
     addDoc,
+    deleteDoc,
 } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import { getAuthState } from '../lib/authState';
@@ -76,7 +77,7 @@ const Spacer = styled('div')(() => ({
     width: '100%',
     height: '1px',
     backgroundColor: 'rgba(0,0,0,0.3)',
-    gridColumn: 'span 3',
+    gridColumn: 'span 4',
     margin: '4px 0',
 }));
 
@@ -115,7 +116,7 @@ const EditCardModal = (props) => {
         left: 0,
     }));
 
-    const Modal = styled('form')(() => ({
+    const Modal = styled('div')(() => ({
         width: '80vw',
         padding: 16,
         backgroundColor: 'var(--w)',
@@ -254,11 +255,17 @@ const DeckEditPage = () => {
                 sideB: formAddRef.current['sideB'].value,
             };
 
-            const docRef = doc(db, 'decks', deckRefParam);
-            const cardsRef = collection(docRef, 'cards');
-            await addDoc(cardsRef, newCard).then(() => {
-                setCards(() => [...cards, newCard]);
-            });
+            if (newCard.sideA.trim() !== '' || newCard.sideB.trim() !== '') {
+                const docRef = doc(db, 'decks', deckRefParam);
+                const cardsRef = collection(docRef, 'cards');
+                await addDoc(cardsRef, newCard).then(() => {
+                    setCards(() => [...cards, newCard]);
+                    setCardCount(cards.length);
+                });
+            } else {
+                alert('Add card fields cannot be blank');
+                return null;
+            }
         }
 
         if (formSaveRef.current)
@@ -273,11 +280,24 @@ const DeckEditPage = () => {
     const bRef = useRef();
     const idRef = useRef();
     const arrIndexRef = useRef();
-    function handleDeleteCard(e) {
+
+    async function deleteCard(e, id, i) {
         e.preventDefault();
+
+        const idVal = id;
+
+        const docRef = doc(db, 'decks', deckRefParam);
+        const cardRef = doc(docRef, 'cards', idVal);
+        await deleteDoc(cardRef).catch(console.log);
+        console.log('deleted card');
+        let tempArr = cards;
+        tempArr.splice(i, 1);
+        setCards(tempArr);
+        setModal(false);
     }
 
     async function updateCard(e) {
+        e.preventDefault();
         const aVal = aRef.current.value;
         const bVal = bRef.current.value;
         const idVal = idRef.current.value;
@@ -292,7 +312,7 @@ const DeckEditPage = () => {
                 sideB: bVal,
             },
             { merge: true }
-        );
+        ).then(console.log('updated card'));
 
         // update cards state to resembe db without another query
         const newData = {
@@ -315,6 +335,18 @@ const DeckEditPage = () => {
         idRef.current.value = cardID;
         arrIndexRef.current.value = arrIndex;
     }
+
+    const deleteTitleRef = useRef();
+    async function deleteDeck(inTitle) {
+        console.log(inTitle);
+        if (inTitle !== title) {
+            alert('title does not match');
+            return null;
+        }
+        await deleteDoc(doc(db, 'decks', deckRefParam));
+        console.log('deleted deck', title);
+        navigate('/fc');
+    }
     return (
         <>
             {/* {JSON.stringify(cards)} */}
@@ -324,16 +356,20 @@ const DeckEditPage = () => {
                     <EditCardModal>
                         <span>SideA</span>
                         <span>SideB</span>
-                        <FormSaveButton onClick={() => updateCard()}>
+                        <FormSaveButton
+                            onClick={(e) => {
+                                updateCard(e);
+                            }}
+                        >
                             SAVE
                         </FormSaveButton>
                         <input type="text" ref={aRef} />
                         <input type="text" ref={bRef} />
                         <input type="hidden" ref={idRef} />
                         <input type="hidden" ref={arrIndexRef} />
-                        <FormDeleteButton onClick={(e) => handleDeleteCard(e)}>
+                        {/* <FormDeleteButton onClick={(e) => deleteCard(e)}>
                             DELETE
-                        </FormDeleteButton>
+                        </FormDeleteButton> */}
                         <button
                             id={'closeBtn'}
                             onClick={(e) => {
@@ -359,12 +395,22 @@ const DeckEditPage = () => {
                                 <div>buttons go here</div> */}
                             <FormSaveButton>SAVE</FormSaveButton>
                         </DeckSettingsBox>
-                        <DeckSettingsBox>
+                        <DeckSettingsBox onSubmit={(e) => e.preventDefault()}>
                             <small>delete deck</small>
 
-                            <input type="text" placeholder="TYPE DECK TITLE" />
+                            <input
+                                type="text"
+                                placeholder="TYPE DECK TITLE"
+                                ref={deleteTitleRef}
+                            />
 
-                            <FormDeleteButton>DELETE DECK</FormDeleteButton>
+                            <FormDeleteButton
+                                onClick={() =>
+                                    deleteDeck(deleteTitleRef.current.value)
+                                }
+                            >
+                                DELETE DECK
+                            </FormDeleteButton>
                         </DeckSettingsBox>
                         <DeckSettingsBox ref={formAddRef}>
                             <small>ADD CARD</small>
@@ -374,12 +420,11 @@ const DeckEditPage = () => {
                             <input type="text" name={'sideB'} />
                             <FormSaveButton>Add Card</FormSaveButton>
                         </DeckSettingsBox>
-                        <DeckSettingsBox col={3}>
-                            <small>cards in the deck</small>
+                        <DeckSettingsBox col={4}>
+                            <small>cards in the deck {cardCount}</small>
                         </DeckSettingsBox>
                         <CardList>
                             {cards.map((v, i) => {
-                                console.log(v);
                                 return (
                                     <Fragment>
                                         <span key={'a' + i}>{v.sideA}</span>
@@ -396,6 +441,14 @@ const DeckEditPage = () => {
                                         >
                                             Edit
                                         </button>
+                                        <button
+                                            onClick={(e) =>
+                                                deleteCard(e, v.id, i)
+                                            }
+                                        >
+                                            delete
+                                        </button>
+
                                         <Spacer />
                                     </Fragment>
                                 );
@@ -404,7 +457,9 @@ const DeckEditPage = () => {
 
                         <div style={{ padding: 100 }}></div>
                         <ActionWrapper>
-                            <ActionButton>done</ActionButton>
+                            <ActionButton onClick={() => setMode('view')}>
+                                done
+                            </ActionButton>
                         </ActionWrapper>
                     </>
                 )}
@@ -426,7 +481,10 @@ const DeckEditPage = () => {
 
                             <StatText>{practiceCount}</StatText>
                         </Box>
-                        <DeckSettingsBox col={3}>
+                        <DeckSettingsBox
+                            col={4}
+                            style={{ gridTemplateColumns: '1fr 1fr 50px 50px' }}
+                        >
                             <small>cards in the deck</small>
                             {cards.map((card, i) => {
                                 return (
@@ -434,8 +492,17 @@ const DeckEditPage = () => {
                                         <Spacer key={'s' + i} />
                                         <span key={'a' + i}>{card.sideA}</span>
                                         <span key={'b' + i}>{card.sideB}</span>
-                                        <span key={'count' + i}>
-                                            {card.correctCount}|{card.failCount}
+                                        <span
+                                            key={'count' + i}
+                                            style={{ color: 'var(--g)' }}
+                                        >
+                                            {card.correctCount}
+                                        </span>
+                                        <span
+                                            key={'fail' + i}
+                                            style={{ color: 'var(--r)' }}
+                                        >
+                                            {card.failCount}
                                         </span>
                                     </Fragment>
                                 );
