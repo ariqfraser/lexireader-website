@@ -253,13 +253,12 @@ const DeckEditPage = () => {
                 sideA: formAddRef.current['sideA'].value,
                 sideB: formAddRef.current['sideB'].value,
             };
-            if (!isNew.get('isNew')) {
-                const docRef = doc(db, 'decks', deckRefParam);
-                const cardsRef = collection(docRef, 'cards');
-                await addDoc(cardsRef, newCard).then(() => {
-                    setCards(() => [...cards, newCard]);
-                });
-            }
+
+            const docRef = doc(db, 'decks', deckRefParam);
+            const cardsRef = collection(docRef, 'cards');
+            await addDoc(cardsRef, newCard).then(() => {
+                setCards(() => [...cards, newCard]);
+            });
         }
 
         if (formSaveRef.current)
