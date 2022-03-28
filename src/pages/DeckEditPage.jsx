@@ -78,20 +78,6 @@ const DeckEditPage = () => {
     return (
         <>
             <PageTemplate page={'flashcards'}>
-                <Box color="#fafafa" bg="#272727">
-                    <Title>PREVIEW</Title>
-
-                    <p>{title}</p>
-                    <SubTitle>
-                        Cards: 0&nbsp;&nbsp;&nbsp;&nbsp;Practiced: 0
-                    </SubTitle>
-                </Box>
-                <Box color="var(--b)" bg="#fafafa">
-                    <Title>Times Practiced</Title>
-
-                    <StatText>{practiced}</StatText>
-                </Box>
-
                 {mode === 'edit' && (
                     <>
                         <DeckSettingsBox>
@@ -140,6 +126,19 @@ const DeckEditPage = () => {
 
                 {mode === 'view' && (
                     <>
+                        <Box color="#fafafa" bg="#272727">
+                            <Footer></Footer>
+
+                            <p>{title}</p>
+                            <SubTitle>
+                                Cards: 0&nbsp;&nbsp;&nbsp;&nbsp;Practiced: 0
+                            </SubTitle>
+                        </Box>
+                        <Box color="var(--b)" bg="#fafafa">
+                            <Title>Times Practiced</Title>
+
+                            <StatText>{practiced}</StatText>
+                        </Box>
                         <DeckSettingsBox col={2}>
                             <small>cards in the deck</small>
 
