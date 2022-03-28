@@ -1,13 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
 import { collection, getDocs, where, query } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import PageTemplate from '../components/PageTemplate';
-import SearchBar from '../components/SearchBar';
+import { Search } from '../assets/icons';
 import { Add } from '../assets/icons';
 import { Box, SubTitle, Footer } from '../components/Box';
 import { auth } from '../lib/init-firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 
 const CreateBtn = () => {
     const Button = styled('a')(() => ({
@@ -51,20 +52,10 @@ const CreateBtn = () => {
 const FlashCardPage = () => {
     const [decks, setDecks] = useState([]);
     const [userState] = useAuthState(auth);
+    const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        // const usersRef = collection(db, 'cards');
-        // getDocs(usersRef)
-        //     .then((res) => {
-        //         console.log(res);
-        //         const docs = res.docs.map((v) => ({
-        //             data: v.data(),
-        //             id: v.id,
-        //         }));
-        //         console.log(docs);
-        //     })
-        //     .catch((err) => console.log(err.message));
-
         async function getDecks() {
             const decksRef = query(
                 collection(db, 'decks'),
@@ -86,6 +77,75 @@ const FlashCardPage = () => {
         getDecks();
     }, [userState]);
 
+    useEffect(() => {
+        if (!userState) navigate('/');
+    }, []);
+
+    const SearchBar = () => {
+        const formRef = useRef();
+        const searchRef = useRef();
+
+        const Wrapper = styled('form')(() => ({
+            gridColumn: '1 / span 2',
+            width: '100%',
+            position: 'relative',
+            '&>input': {
+                width: 'calc(100% - 32px)',
+                padding: '8px 24px',
+                borderRadius: 32,
+                border: 'none',
+            },
+            '&>div': {
+                position: 'absolute',
+                height: '100%',
+                top: 0,
+                right: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                '&>button': {
+                    border: 'none',
+                    cursor: 'pointer',
+                    backgroundColor: 'transparent',
+                },
+            },
+        }));
+        useEffect(() => {
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                setSearchQuery(searchRef.current.value);
+            };
+            formRef.current.addEventListener('submit', handleSubmit, true);
+
+            // return () => {
+            //     formRef.current.removeEventListener('submit', handleSubmit);
+            // };
+        }, []);
+
+        const handleReset = (e) => {
+            e.preventDefault();
+            setSearchQuery('');
+        };
+
+        return (
+            <Wrapper ref={formRef}>
+                <input
+                    type="text"
+                    placeholder="Search deck title..."
+                    ref={searchRef}
+                />
+                <div>
+                    <button type="submit" aria-label="Search button">
+                        <Search />
+                    </button>
+                    {searchQuery.trim() !== '' && (
+                        <button onClick={(e) => handleReset(e)}>reset</button>
+                    )}
+                </div>
+            </Wrapper>
+        );
+    };
+
     return (
         <>
             <CreateBtn />
@@ -97,25 +157,56 @@ const FlashCardPage = () => {
                     </span>
                 )}
                 {decks.map((v, i) => {
-                    return (
-                        <Box
-                            bg={'#272727'}
-                            color={'#fafafa'}
-                            key={`box${i}`}
-                            onClick={() =>
-                                (window.location.href = `/fc/${v.id}`)
-                            }
-                        >
-                            <p key={`p${i}`}>{v['data']['title']}</p>
-                            <SubTitle key={`t${i}`}>
-                                Cards: {v['data']['cardCount']}
-                            </SubTitle>
-                            <SubTitle key={`prac${i}`}>
-                                practiced: {v['data']['practiceCount']}
-                            </SubTitle>
-                            <Footer key={`f${i}`}>click to view</Footer>
-                        </Box>
-                    );
+                    if (searchQuery.trim() !== '') {
+                        if (v['data']['title'].includes(searchQuery)) {
+                            return (
+                                <>
+                                    <Box
+                                        bg={'#272727'}
+                                        color={'#fafafa'}
+                                        key={`box${i}`}
+                                        onClick={() =>
+                                            (window.location.href = `/fc/${v.id}`)
+                                        }
+                                    >
+                                        <p key={`p${i}`}>
+                                            {v['data']['title']}
+                                        </p>
+                                        <SubTitle key={`t${i}`}>
+                                            Cards: {v['data']['cardCount']}
+                                        </SubTitle>
+                                        <SubTitle key={`prac${i}`}>
+                                            practiced:{' '}
+                                            {v['data']['practiceCount']}
+                                        </SubTitle>
+                                        <Footer key={`f${i}`}>
+                                            click to view
+                                        </Footer>
+                                    </Box>
+                                </>
+                            );
+                        }
+                    } else {
+                        return (
+                            <Box
+                                bg={'#272727'}
+                                color={'#fafafa'}
+                                key={`box${i}`}
+                                onClick={() =>
+                                    (window.location.href = `/fc/${v.id}`)
+                                }
+                            >
+                                <p key={`p${i}`}>{v['data']['title']}</p>
+                                <SubTitle key={`t${i}`}>
+                                    Cards: {v['data']['cardCount']}
+                                </SubTitle>
+                                <SubTitle key={`prac${i}`}>
+                                    practiced: {v['data']['practiceCount']}
+                                </SubTitle>
+                                <Footer key={`f${i}`}>click to view</Footer>
+                            </Box>
+                        );
+                    }
                 })}
             </PageTemplate>
         </>
