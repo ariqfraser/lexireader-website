@@ -61,7 +61,7 @@ const DeckEditPage = () => {
     const [practiced, setPracticed] = useState(0);
     const [isNew] = useSearchParams();
 
-    const [mode, setMode] = useState('view');
+    const [mode, setMode] = useState(!isNew.get('isNew') ? 'view' : 'edit');
 
     // check if creating a new deck
     if (!isNew.get('isNew')) {
@@ -129,10 +129,10 @@ const DeckEditPage = () => {
                                 onClick={() => handleCancelChanges()}
                                 bg="red"
                             >
-                                cancel changes
+                                cancel
                             </ActionButton>
                             <ActionButton onClick={() => handleSaveChanges()}>
-                                Save Changes
+                                Save
                             </ActionButton>
                         </ActionWrapper>
                     </>
