@@ -4,6 +4,7 @@ import * as Icon from '../assets/icons';
 import { signInWithGoogle } from '../utils/signIn';
 import { getAuthState } from '../lib/authState';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const HomeSection = (props) => {
     const Wrapper = styled('div')(() => ({

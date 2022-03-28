@@ -1,8 +1,18 @@
-import { useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useState, useEffect, Fragment } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageTemplate from '../components/PageTemplate';
 import { Box, SubTitle, Footer, Title, StatText } from '../components/Box';
 import styled from '@emotion/styled';
+import {
+    query,
+    getDoc,
+    where,
+    doc,
+    getDocs,
+    collectionGroup,
+} from 'firebase/firestore';
+import { db } from '../lib/init-firebase';
+import { getAuthState } from '../lib/authState';
 
 const DeckSettingsBox = styled('div')(({ col }) => ({
     backgroundColor: 'var(--w)',
@@ -51,26 +61,92 @@ const Spacer = styled('div')(() => ({
     width: '100%',
     height: '1px',
     backgroundColor: 'rgba(0,0,0,0.3)',
-    gridColumn: 'span 2',
+    gridColumn: 'span 3',
     margin: '4px 0',
 }));
 
 const DeckEditPage = () => {
-    const [title, setTitle] = useState(useParams()['title']);
+    const [deckRefParam] = useState(useParams()['deckRef']);
+    const [title, setTitle] = useState('');
     const [cards, setCards] = useState([]);
-    const [practiced, setPracticed] = useState(0);
+    const [practiceCount, setPracticeCount] = useState(0);
+    const [cardCount, setCardCount] = useState(0);
     const [isNew] = useSearchParams();
 
     const [mode, setMode] = useState(!isNew.get('isNew') ? 'view' : 'edit');
+    const [userState] = getAuthState();
+    const navigate = useNavigate();
 
-    // check if creating a new deck
-    if (!isNew.get('isNew')) {
-        // query db and set states
-        console.log('attempting to get data');
+    if (!userState) navigate('/');
 
-        async function getDeckData() {}
-        getDeckData();
-    }
+    useEffect(() => {
+        // check if creating a new deck
+        if (!isNew.get('isNew')) {
+            // query db and set states
+            console.log('attempting to get data');
+
+            async function getDeckData() {
+                const deckRef = doc(db, 'decks', deckRefParam);
+
+                await getDoc(deckRef)
+                    .then((snap) => {
+                        // validation
+                        if (!snap.exists()) throw new Error(469);
+                        if (snap.data()['user'] !== userState['email'])
+                            throw new Error(569);
+                        // console.log(snap); // show snapshot
+                        return snap.data();
+                    })
+                    .then((data) => {
+                        // process data
+                        // console.log(data); // show data
+                        setTitle(data.title);
+                        const cardsRef = query(
+                            collectionGroup(db, 'cards'),
+                            where('deckRef', '==', deckRefParam)
+                        );
+                        getDocs(cardsRef)
+                            .then((data) => {
+                                data.docs.forEach((doc) => {
+                                    const card = doc.data();
+                                    setCards(() => [
+                                        ...cards,
+                                        {
+                                            sideA: card['sideA'],
+                                            sideB: card['sideB'],
+                                            correctCount: card['correctCount'],
+                                            failCount: card['failCount'],
+                                            id: doc.id,
+                                        },
+                                    ]);
+
+                                    setPracticeCount(
+                                        practiceCount +
+                                            doc.data()['correctCount'] +
+                                            doc.data()['failCount']
+                                    );
+                                });
+                            })
+                            .then(() => setCardCount(cards.length));
+                    })
+
+                    .catch((err) => {
+                        switch (err.message) {
+                            case '469':
+                                alert(
+                                    'deck does not exist! Go back and try again!'
+                                );
+                                break;
+                            case '569':
+                                alert('this does not belong to you 👮‍♂️');
+                                navigate('/fc');
+                                break;
+                        }
+                    });
+            }
+            if (userState) getDeckData();
+        }
+    }, [userState]);
 
     function handleSaveChanges() {
         setMode('view');
@@ -80,17 +156,16 @@ const DeckEditPage = () => {
     }
     return (
         <>
+            {/* {JSON.stringify(cards)} */}
             <PageTemplate page={'flashcards'}>
                 {mode === 'edit' && (
                     <>
                         <DeckSettingsBox>
                             <small>Deck Settings</small>
-                            <small></small>
                             deck title
-                            <input type="text" value={title} />
+                            <input type="text" defaultValue={title} />
                             deck color
                             <div>buttons go here</div>
-                            <small></small>
                             <small>delete deck</small>
                             <input type="text" placeholder="TYPE DECK TITLE" />
                             <button>DELETE DECK</button>
@@ -134,25 +209,30 @@ const DeckEditPage = () => {
 
                             <p>{title}</p>
                             <SubTitle>
-                                Cards: 0&nbsp;&nbsp;&nbsp;&nbsp;Practiced: 0
+                                Cards: {cardCount}
+                                &nbsp;&nbsp;&nbsp;&nbsp;Practiced:{' '}
+                                {practiceCount}
                             </SubTitle>
                         </Box>
                         <Box color="var(--b)" bg="#fafafa">
                             <Title>Times Practiced</Title>
 
-                            <StatText>{practiced}</StatText>
+                            <StatText>{practiceCount}</StatText>
                         </Box>
-                        <DeckSettingsBox col={2}>
+                        <DeckSettingsBox col={3}>
                             <small>cards in the deck</small>
-
-                            <span>side A</span>
-                            <span>side B</span>
-                            <Spacer />
-                            <span>Ellos</span>
-                            <span>They</span>
-                            <Spacer />
-                            <span>como</span>
-                            <span>as</span>
+                            {cards.map((card, i) => {
+                                return (
+                                    <Fragment key={'f' + i}>
+                                        <Spacer key={'s' + i} />
+                                        <span key={'a' + i}>{card.sideA}</span>
+                                        <span key={'b' + i}>{card.sideB}</span>
+                                        <span key={'count' + i}>
+                                            {card.correctCount}|{card.failCount}
+                                        </span>
+                                    </Fragment>
+                                );
+                            })}
                         </DeckSettingsBox>
                         <ActionWrapper>
                             <ActionButton

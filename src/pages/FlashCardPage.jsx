@@ -9,6 +9,8 @@ import { Box, SubTitle, Footer } from '../components/Box';
 import { auth } from '../lib/init-firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
+import { getAuthState } from '../lib/authState';
 
 const CreateBtn = () => {
     const Button = styled('a')(() => ({
@@ -51,10 +53,10 @@ const CreateBtn = () => {
 
 const FlashCardPage = () => {
     const [decks, setDecks] = useState([]);
-    const [userState] = useAuthState(auth);
+    const [userState] = getAuthState();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
-
+    if (!userState) navigate('/');
     useEffect(() => {
         async function getDecks() {
             const decksRef = query(
@@ -74,12 +76,8 @@ const FlashCardPage = () => {
                 })
                 .catch((err) => console.log(err.message));
         }
-        getDecks();
+        if (userState) getDecks();
     }, [userState]);
-
-    useEffect(() => {
-        if (!userState) navigate('/');
-    }, []);
 
     const SearchBar = () => {
         const formRef = useRef();

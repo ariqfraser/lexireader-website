@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import PageWrapper from '../components/PageWrapper';
 
 import Nav from '../components/Nav';
@@ -6,11 +6,12 @@ import Carousell from '../components/Carousell';
 import HomeSection from '../components/HomeSection';
 import { getAuthState } from '../lib/authState';
 import { auth } from '../lib/init-firebase';
+
 const Home = () => {
     const [userState] = getAuthState();
 
     useEffect(() => {
-        console.log(userState);
+        if (userState) console.log(userState);
     }, [userState]);
 
     useEffect(() => {}, []);

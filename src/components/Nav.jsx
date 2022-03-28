@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { getAuthState } from '../lib/authState';
 import { signInWithGoogle } from '../utils/signIn';
 import { logout } from '../utils/logout';
+import { useState } from 'react';
 
 const Nav = ({ screen }) => {
     const Wrapper = styled('nav')(() => ({

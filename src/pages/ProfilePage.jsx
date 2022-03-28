@@ -20,18 +20,16 @@ const ProfilePage = () => {
     const [practiceCount, setPracticeCount] = useState(0);
     const [wordCount, setWordCount] = useState(0);
     const [deckCount, setDeckCount] = useState(0);
-    const [userState] = getAuthState();
-
-    if (!userState) navigate('/');
 
     const usersCollectionRef = collection(db, 'users');
-    let email = null;
+    const [userState] = getAuthState();
+    if (!userState) navigate('/');
     useEffect(() => {
         const getUserData = async () => {
             // if (email === null || email === undefined) {
             //     return null;
             // }
-            email = auth['_currentUser'].email;
+            const email = userState.email;
 
             console.log(email);
             const collectionQuery = query(
@@ -63,26 +61,8 @@ const ProfilePage = () => {
                 })
                 .catch((err) => console.log(err.message));
         };
-        getUserData();
+        if (userState) getUserData();
     }, [userState]);
-
-    // Promise.resolve()
-    //     .then(() => {
-    //         return ;
-    //     })
-    //     .then((email) => {
-    //         console.log(email);
-    //         return query(usersCollectionRef, where('email', '==', email));
-    //     })
-    //     .then((query) => getDocs(query))
-    //     .then((data) =>
-    //         data.docs.map((v) => ({
-    //             data: v.data(),
-    //             id: v.id,
-    //         }))
-    //     )
-
-    //     .catch((err) => console.log(err));
 
     return (
         <>
