@@ -67,6 +67,9 @@ const DeckEditPage = () => {
     if (!isNew.get('isNew')) {
         // query db and set states
         console.log('attempting to get data');
+
+        async function getDeckData() {}
+        getDeckData();
     }
 
     function handleSaveChanges() {

@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { collection, getDocs, where } from 'firebase/firestore';
+import { collection, getDocs, where, query } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import PageTemplate from '../components/PageTemplate';
 import SearchBar from '../components/SearchBar';
 import { Add } from '../assets/icons';
 import { Box, SubTitle, Footer } from '../components/Box';
+import { auth } from '../lib/init-firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 const CreateBtn = () => {
     const Button = styled('a')(() => ({
@@ -47,6 +49,9 @@ const CreateBtn = () => {
 };
 
 const FlashCardPage = () => {
+    const [decks, setDecks] = useState([]);
+    const [userState] = useAuthState(auth);
+
     useEffect(() => {
         // const usersRef = collection(db, 'cards');
         // getDocs(usersRef)
@@ -59,27 +64,28 @@ const FlashCardPage = () => {
         //         console.log(docs);
         //     })
         //     .catch((err) => console.log(err.message));
-    }, []);
 
-    // const decks = [
-    //     'spanish',
-    //     'french',
-    //     'indonesian',
-    //     'spanish',
-    //     'french',
-    //     'indonesian',
-    //     'spanish',
-    //     'french',
-    //     'indonesian',
-    //     'spanish',
-    //     'french',
-    //     'indonesian',
-    //     'spanish',
-    //     'french',
-    //     'indonesian',
-    // ];
+        async function getDecks() {
+            const decksRef = query(
+                collection(db, 'decks'),
+                where('user', '==', userState['email'])
+            );
 
-    const decks = [];
+            getDocs(decksRef)
+                .then((data) =>
+                    data.docs.map((v) => ({
+                        data: v.data(),
+                        id: v.id,
+                    }))
+                )
+                .then((doc) => {
+                    setDecks(doc);
+                })
+                .catch((err) => console.log(err.message));
+        }
+        getDecks();
+    }, [userState]);
+
     return (
         <>
             <CreateBtn />
@@ -92,10 +98,22 @@ const FlashCardPage = () => {
                 )}
                 {decks.map((v, i) => {
                     return (
-                        <Box bg={'#272727'} color={'#fafafa'}>
-                            <p>{v}</p>
-                            <SubTitle>Cards: 0</SubTitle>
-                            <Footer>click to view</Footer>
+                        <Box
+                            bg={'#272727'}
+                            color={'#fafafa'}
+                            key={`box${i}`}
+                            onClick={() =>
+                                (window.location.href = `/fc/${v.id}`)
+                            }
+                        >
+                            <p key={`p${i}`}>{v['data']['title']}</p>
+                            <SubTitle key={`t${i}`}>
+                                Cards: {v['data']['cardCount']}
+                            </SubTitle>
+                            <SubTitle key={`prac${i}`}>
+                                practiced: {v['data']['practiceCount']}
+                            </SubTitle>
+                            <Footer key={`f${i}`}>click to view</Footer>
                         </Box>
                     );
                 })}
