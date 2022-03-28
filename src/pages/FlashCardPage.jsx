@@ -135,12 +135,12 @@ const FlashCardPage = () => {
                     ref={searchRef}
                 />
                 <div>
-                    <button type="submit" aria-label="Search button">
-                        <Search />
-                    </button>
                     {searchQuery.trim() !== '' && (
                         <button onClick={(e) => handleReset(e)}>reset</button>
                     )}
+                    <button type="submit" aria-label="Search button">
+                        <Search />
+                    </button>
                 </div>
             </Wrapper>
         );
@@ -160,30 +160,23 @@ const FlashCardPage = () => {
                     if (searchQuery.trim() !== '') {
                         if (v['data']['title'].includes(searchQuery)) {
                             return (
-                                <>
-                                    <Box
-                                        bg={'#272727'}
-                                        color={'#fafafa'}
-                                        key={`box${i}`}
-                                        onClick={() =>
-                                            (window.location.href = `/fc/${v.id}`)
-                                        }
-                                    >
-                                        <p key={`p${i}`}>
-                                            {v['data']['title']}
-                                        </p>
-                                        <SubTitle key={`t${i}`}>
-                                            Cards: {v['data']['cardCount']}
-                                        </SubTitle>
-                                        <SubTitle key={`prac${i}`}>
-                                            practiced:{' '}
-                                            {v['data']['practiceCount']}
-                                        </SubTitle>
-                                        <Footer key={`f${i}`}>
-                                            click to view
-                                        </Footer>
-                                    </Box>
-                                </>
+                                <Box
+                                    bg={'#272727'}
+                                    color={'#fafafa'}
+                                    key={`box${i}`}
+                                    onClick={() =>
+                                        (window.location.href = `/fc/${v.id}`)
+                                    }
+                                >
+                                    <p key={`p${i}`}>{v['data']['title']}</p>
+                                    <SubTitle key={`t${i}`}>
+                                        Cards: {v['data']['cardCount']}
+                                    </SubTitle>
+                                    <SubTitle key={`prac${i}`}>
+                                        practiced: {v['data']['practiceCount']}
+                                    </SubTitle>
+                                    <Footer key={`f${i}`}>click to view</Footer>
+                                </Box>
                             );
                         }
                     } else {
