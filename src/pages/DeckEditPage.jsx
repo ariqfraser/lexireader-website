@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageTemplate from '../components/PageTemplate';
 import { Box, SubTitle, Footer, Title, StatText } from '../components/Box';
 import styled from '@emotion/styled';
+import AWN from 'awesome-notifications';
 import {
     query,
     getDoc,
@@ -249,13 +250,15 @@ const DeckEditPage = () => {
                 correctCount: 0,
                 deckRef: deckRefParam,
                 failCount: 0,
-                sideA: 'aa',
-                sideB: 'bb',
+                sideA: formAddRef.current['sideA'].value,
+                sideB: formAddRef.current['sideB'].value,
             };
             if (!isNew.get('isNew')) {
                 const docRef = doc(db, 'decks', deckRefParam);
                 const cardsRef = collection(docRef, 'cards');
-                await addDoc(cardsRef, newCard);
+                await addDoc(cardsRef, newCard).then(() => {
+                    setCards(() => [...cards, newCard]);
+                });
             }
         }
 
@@ -367,9 +370,9 @@ const DeckEditPage = () => {
                         <DeckSettingsBox ref={formAddRef}>
                             <small>ADD CARD</small>
                             Side A (e.g. a word)
-                            <input type="text" />
+                            <input type="text" name={'sideA'} />
                             Side B (e.g. the meaning)
-                            <input type="text" />
+                            <input type="text" name={'sideB'} />
                             <FormSaveButton>Add Card</FormSaveButton>
                         </DeckSettingsBox>
                         <DeckSettingsBox col={3}>
