@@ -16,8 +16,9 @@ const PageTemplate = ({ children, page }) => {
         <>
             <div
                 style={{
-                    background:
-                        'linear-gradient(0deg, rgba(174,79,247,1) 0%, rgba(79,195,247,1) 50%)',
+                    background: '#fafafa',
+                    // background:
+                    //     'linear-gradient(0deg, rgba(174,79,247,1) 0%, rgba(79,195,247,1) 50%)',
                     height: '100vh',
                     width: '100vw',
                     position: 'fixed',

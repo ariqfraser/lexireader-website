@@ -3,14 +3,8 @@ import Stats from '../components/Stats';
 import { useEffect, useState, useLayoutEffect } from 'react';
 import MainNav from '../components/MainNav';
 import { getAuthState } from '../lib/authState';
-import {
-    collection,
-    getDocs,
-    query,
-    Timestamp,
-    where,
-} from 'firebase/firestore';
-import { db, auth } from '../lib/init-firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../lib/init-firebase';
 
 const ProfilePage = () => {
     const navigate = useNavigate();

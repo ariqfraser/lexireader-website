@@ -3,14 +3,12 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import PageTemplate from '../components/PageTemplate';
 import { Box, SubTitle, Footer, Title, StatText } from '../components/Box';
 import styled from '@emotion/styled';
-import AWN from 'awesome-notifications';
 import {
     query,
     getDoc,
     where,
     doc,
     getDocs,
-    collectionGroup,
     collection,
     setDoc,
     addDoc,
@@ -149,7 +147,7 @@ const EditCardModal = (props) => {
 };
 
 const DeckEditPage = () => {
-    const [deckRefParam] = useState(useParams()['deckRef']);
+    const [deckRefParam, setDeckRefParam] = useState(useParams()['deckRef']);
     const [title, setTitle] = useState('');
     const [cards, setCards] = useState([]);
     const [practiceCount, setPracticeCount] = useState(0);
@@ -224,6 +222,13 @@ const DeckEditPage = () => {
                                 break;
                         }
                     });
+            }
+
+            // if new deck
+            if (isNew.get('isNew')) {
+                // create new deck
+                // get new deck param
+                setTitle('untitled');
             }
 
             if (userState) getDeckData();
@@ -515,7 +520,13 @@ const DeckEditPage = () => {
                             >
                                 Edit
                             </ActionButton>
-                            <ActionButton>Practice</ActionButton>
+                            <ActionButton
+                                onClick={() =>
+                                    (window.location.href = `/fc/${deckRefParam}/practice`)
+                                }
+                            >
+                                Practice
+                            </ActionButton>
                         </ActionWrapper>
                     </>
                 )}
