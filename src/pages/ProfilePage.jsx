@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Stats from '../components/Stats';
-import { useEffect, useState, useLayoutEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { getAuthState } from '../lib/authState';
 import { collection, getDocs, query, where } from 'firebase/firestore';

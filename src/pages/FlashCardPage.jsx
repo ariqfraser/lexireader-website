@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import styled from '@emotion/styled';
-import { collection, getDocs, where, query } from 'firebase/firestore';
+import { collection, getDocs, where, query, addDoc } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import PageTemplate from '../components/PageTemplate';
 import { Search } from '../assets/icons';
@@ -13,7 +13,9 @@ import { getAuth } from 'firebase/auth';
 import { getAuthState } from '../lib/authState';
 
 const CreateBtn = () => {
-    const Button = styled('a')(() => ({
+    const [userState] = getAuthState();
+
+    const Button = styled('button')(() => ({
         padding: '16px 12px',
         borderRadius: 50,
         position: 'fixed',
@@ -43,8 +45,19 @@ const CreateBtn = () => {
         justifyContent: 'center',
     }));
 
+    async function createNewDeck() {
+        const newDeckRef = await addDoc(collection(db, 'decks'), {
+            cardCount: 0,
+            practiceCount: 0,
+            title: 'untitled',
+            user: userState['email'],
+        });
+        window.location.href = `/fc/${newDeckRef['id']}?edit=true`;
+        console.log();
+    }
+
     return (
-        <Button aria-label="Create a new deck" href="/fc/untitled?isNew=true">
+        <Button aria-label="Create a new deck" onClick={() => createNewDeck()}>
             <span>Create new deck</span>
             {/* <Add /> */}
         </Button>

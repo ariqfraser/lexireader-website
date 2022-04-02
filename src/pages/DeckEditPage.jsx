@@ -13,6 +13,8 @@ import {
     setDoc,
     addDoc,
     deleteDoc,
+    updateDoc,
+    increment,
 } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import { getAuthState } from '../lib/authState';
@@ -154,7 +156,7 @@ const DeckEditPage = () => {
     const [cardCount, setCardCount] = useState(0);
     const [isNew] = useSearchParams();
 
-    const [mode, setMode] = useState(!isNew.get('isNew') ? 'view' : 'edit');
+    const [mode, setMode] = useState(!isNew.get('edit') ? 'view' : 'edit');
     const [userState] = getAuthState();
     const navigate = useNavigate();
 
@@ -165,116 +167,63 @@ const DeckEditPage = () => {
 
     useEffect(() => {
         // check if creating a new deck
-        if (!isNew.get('isNew')) {
-            // query db and set states
-            console.log('attempting to get data');
 
-            async function getDeckData() {
-                const deckRef = doc(db, 'decks', deckRefParam);
-                const cardsRef = collection(deckRef, 'cards');
-                await getDoc(deckRef)
-                    .then((snap) => {
-                        // validation
-                        if (!snap.exists()) throw new Error(469);
-                        if (snap.data()['user'] !== userState['email'])
-                            throw new Error(569);
-                        // console.log(snap); // show snapshot
-                        return snap.data();
-                    })
-                    .then((data) => {
-                        // process data
-                        // console.log(data); // show data
-                        setPracticeCount(data.practiceCount);
-                        setTitle(data.title);
-                        const cardsQuery = query(cardsRef);
-                        getDocs(cardsQuery)
-                            .then((data) => {
-                                console.log(data);
-                                return data.docs.map((v) => {
-                                    return {
-                                        sideA: v.data()['sideA'],
-                                        sideB: v.data()['sideB'],
-                                        correctCount: v.data()['correctCount'],
-                                        failCount: v.data()['failCount'],
-                                        id: v.id,
-                                    };
-                                });
-                            })
-                            .then((cardArr) => {
-                                setCards(cardArr);
-                                setCardCount(cardArr.length);
+        // query db and set states
+        console.log('attempting to get data');
+
+        async function getDeckData() {
+            const deckRef = doc(db, 'decks', deckRefParam);
+            const cardsRef = collection(deckRef, 'cards');
+            await getDoc(deckRef)
+                .then((snap) => {
+                    // validation
+                    if (!snap.exists()) throw new Error(469);
+                    if (snap.data()['user'] !== userState['email'])
+                        throw new Error(569);
+                    // console.log(snap); // show snapshot
+                    return snap.data();
+                })
+                .then((data) => {
+                    // process data
+                    // console.log(data); // show data
+                    setPracticeCount(data.practiceCount);
+                    setTitle(data.title);
+                    const cardsQuery = query(cardsRef);
+                    getDocs(cardsQuery)
+                        .then((data) => {
+                            console.log(data);
+                            return data.docs.map((v) => {
+                                return {
+                                    sideA: v.data()['sideA'],
+                                    sideB: v.data()['sideB'],
+                                    correctCount: v.data()['correctCount'],
+                                    failCount: v.data()['failCount'],
+                                    id: v.id,
+                                };
                             });
-                    })
-                    .catch((err) => {
-                        switch (err.message) {
-                            case '469':
-                                alert(
-                                    'deck does not exist! Go back and try again!'
-                                );
-                                break;
-                            case '569':
-                                alert('this does not belong to you 👮‍♂️');
-                                navigate('/fc');
-                                break;
-                        }
-                    });
-            }
-
-            // if new deck
-            if (isNew.get('isNew')) {
-                // create new deck
-                // get new deck param
-                setTitle('untitled');
-            }
-
-            if (userState) getDeckData();
-        }
-    }, [userState]);
-
-    useEffect(() => {
-        async function saveNewTitle(e) {
-            e.preventDefault();
-            const newTitle = {
-                title: formSaveRef.current['title']['value'],
-            };
-            setTitle(newTitle.title);
-
-            if (!isNew.get('isNew')) {
-                const docRef = doc(db, 'decks', deckRefParam);
-                await setDoc(docRef, newTitle, { merge: true });
-            }
-        }
-
-        async function addCard(e) {
-            e.preventDefault();
-
-            const newCard = {
-                correctCount: 0,
-                deckRef: deckRefParam,
-                failCount: 0,
-                sideA: formAddRef.current['sideA'].value,
-                sideB: formAddRef.current['sideB'].value,
-            };
-
-            if (newCard.sideA.trim() !== '' || newCard.sideB.trim() !== '') {
-                const docRef = doc(db, 'decks', deckRefParam);
-                const cardsRef = collection(docRef, 'cards');
-                await addDoc(cardsRef, newCard).then(() => {
-                    setCards(() => [...cards, newCard]);
-                    setCardCount(cards.length);
+                        })
+                        .then((cardArr) => {
+                            setCards(cardArr);
+                            setCardCount(cardArr.length);
+                        });
+                })
+                .catch((err) => {
+                    switch (err.message) {
+                        case '469':
+                            alert(
+                                'deck does not exist! Go back and try again!'
+                            );
+                            break;
+                        case '569':
+                            alert('this does not belong to you 👮‍♂️');
+                            navigate('/fc');
+                            break;
+                    }
                 });
-            } else {
-                alert('Add card fields cannot be blank');
-                return null;
-            }
         }
 
-        if (formSaveRef.current)
-            formSaveRef.current.addEventListener('submit', saveNewTitle, true);
-
-        if (formAddRef.current)
-            formAddRef.current.addEventListener('submit', addCard, true);
-    }, [mode]);
+        if (userState) getDeckData();
+    }, [userState]);
 
     const [modal, setModal] = useState(false);
     const aRef = useRef();
@@ -284,17 +233,20 @@ const DeckEditPage = () => {
 
     async function deleteCard(e, id, i) {
         e.preventDefault();
-
+        console.log({ id: id, index: i });
         const idVal = id;
 
         const docRef = doc(db, 'decks', deckRefParam);
         const cardRef = doc(docRef, 'cards', idVal);
         await deleteDoc(cardRef).catch(console.log);
+        await updateDoc(docRef, {
+            cardCount: increment(-1),
+        });
         console.log('deleted card');
         let tempArr = cards;
         tempArr.splice(i, 1);
         setCards(tempArr);
-        setModal(false);
+        window.location.href = `/fc/${deckRefParam}?edit=true`;
     }
 
     async function updateCard(e) {
@@ -327,6 +279,7 @@ const DeckEditPage = () => {
         cardArr[arrIndexRef.current.value] = newData;
         console.log('newData', '=', newData);
         console.log('cardArr', '=', cardArr);
+        alert('saved!');
     }
 
     async function showModal(sideA, sideB, cardID, arrIndex) {
@@ -348,6 +301,61 @@ const DeckEditPage = () => {
         console.log('deleted deck', title);
         navigate('/fc');
     }
+
+    // handle's done button while in edit mode
+    function handleDone() {
+        setMode('view');
+    }
+
+    // handle deck settings
+    async function updateDeckTitle(e) {
+        e.preventDefault();
+        const newTitle = {
+            title: formSaveRef.current['title']['value'],
+        };
+        setTitle(newTitle.title);
+
+        const docRef = doc(db, 'decks', deckRefParam);
+        await setDoc(docRef, newTitle, { merge: true });
+        console.log(newTitle);
+    }
+
+    async function addCard(e) {
+        e.preventDefault();
+
+        let newCard = {
+            correctCount: 0,
+            deckRef: deckRefParam,
+            failCount: 0,
+            sideA: formAddRef.current['sideA'].value,
+            sideB: formAddRef.current['sideB'].value,
+        };
+
+        if (newCard.sideA.trim() !== '' || newCard.sideB.trim() !== '') {
+            const docRef = doc(db, 'decks', deckRefParam);
+            const cardsRef = collection(docRef, 'cards');
+            await addDoc(cardsRef, newCard).then((addedCard) => {
+                newCard = {
+                    correctCount: 0,
+                    deckRef: deckRefParam,
+                    failCount: 0,
+                    sideA: formAddRef.current['sideA'].value,
+                    sideB: formAddRef.current['sideB'].value,
+                    id: addedCard.id,
+                };
+                setCards(() => [...cards, newCard]);
+                setCardCount(cards.length);
+            });
+
+            await updateDoc(docRef, {
+                cardCount: increment(1),
+            });
+        } else {
+            alert('Add card fields cannot be blank');
+            return null;
+        }
+    }
+    console.log(cards);
     return (
         <>
             {/* {JSON.stringify(cards)} */}
@@ -384,7 +392,10 @@ const DeckEditPage = () => {
                 )}
                 {mode === 'edit' && (
                     <>
-                        <DeckSettingsBox ref={formSaveRef}>
+                        <DeckSettingsBox
+                            ref={formSaveRef}
+                            onSubmit={(e) => e.preventDefault()}
+                        >
                             <small>Deck Settings</small>
                             deck title
                             <input
@@ -394,7 +405,9 @@ const DeckEditPage = () => {
                             />
                             {/* deck color
                                 <div>buttons go here</div> */}
-                            <FormSaveButton>SAVE</FormSaveButton>
+                            <FormSaveButton onClick={(e) => updateDeckTitle(e)}>
+                                SAVE
+                            </FormSaveButton>
                         </DeckSettingsBox>
                         <DeckSettingsBox onSubmit={(e) => e.preventDefault()}>
                             <small>delete deck</small>
@@ -413,13 +426,18 @@ const DeckEditPage = () => {
                                 DELETE DECK
                             </FormDeleteButton>
                         </DeckSettingsBox>
-                        <DeckSettingsBox ref={formAddRef}>
+                        <DeckSettingsBox
+                            ref={formAddRef}
+                            onSubmit={(e) => e.preventDefault()}
+                        >
                             <small>ADD CARD</small>
                             Side A (e.g. a word)
                             <input type="text" name={'sideA'} />
                             Side B (e.g. the meaning)
                             <input type="text" name={'sideB'} />
-                            <FormSaveButton>Add Card</FormSaveButton>
+                            <FormSaveButton onClick={(e) => addCard(e)}>
+                                Add Card
+                            </FormSaveButton>
                         </DeckSettingsBox>
                         <DeckSettingsBox col={4}>
                             <small>cards in the deck {cardCount}</small>
@@ -427,10 +445,11 @@ const DeckEditPage = () => {
                         <CardList>
                             {cards.map((v, i) => {
                                 return (
-                                    <Fragment>
+                                    <Fragment key={'f' + i}>
                                         <span key={'a' + i}>{v.sideA}</span>
                                         <span key={'b' + i}>{v.sideB}</span>
                                         <button
+                                            key={'b1' + i}
                                             onClick={() =>
                                                 showModal(
                                                     v.sideA,
@@ -443,6 +462,7 @@ const DeckEditPage = () => {
                                             Edit
                                         </button>
                                         <button
+                                            key={'b2' + i}
                                             onClick={(e) =>
                                                 deleteCard(e, v.id, i)
                                             }
@@ -450,7 +470,7 @@ const DeckEditPage = () => {
                                             delete
                                         </button>
 
-                                        <Spacer />
+                                        <Spacer key={'s' + i} />
                                     </Fragment>
                                 );
                             })}
@@ -458,7 +478,7 @@ const DeckEditPage = () => {
 
                         <div style={{ padding: 100 }}></div>
                         <ActionWrapper>
-                            <ActionButton onClick={() => setMode('view')}>
+                            <ActionButton onClick={() => handleDone()}>
                                 done
                             </ActionButton>
                         </ActionWrapper>
@@ -520,6 +540,7 @@ const DeckEditPage = () => {
                                 onClick={() =>
                                     (window.location.href = `/fc/${deckRefParam}/practice`)
                                 }
+                                disabled={cards.length < 2 ? true : false}
                             >
                                 Practice
                             </ActionButton>
