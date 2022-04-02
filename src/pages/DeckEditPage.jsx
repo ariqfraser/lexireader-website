@@ -184,17 +184,13 @@ const DeckEditPage = () => {
                     .then((data) => {
                         // process data
                         // console.log(data); // show data
+                        setPracticeCount(data.practiceCount);
                         setTitle(data.title);
                         const cardsQuery = query(cardsRef);
                         getDocs(cardsQuery)
                             .then((data) => {
                                 console.log(data);
                                 return data.docs.map((v) => {
-                                    setPracticeCount(
-                                        practiceCount +
-                                            v.data()['correctCount'] +
-                                            v.data()['failCount']
-                                    );
                                     return {
                                         sideA: v.data()['sideA'],
                                         sideB: v.data()['sideB'],
