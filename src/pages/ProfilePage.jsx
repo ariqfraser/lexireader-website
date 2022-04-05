@@ -5,6 +5,7 @@ import MainNav from '../components/MainNav';
 import { getAuthState } from '../lib/authState';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
+import PageTemplate from '../components/PageTemplate';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ const ProfilePage = () => {
     const [username, setUsername] = useState('');
     const [joinDate, setJoinDate] = useState('');
     const [practiceCount, setPracticeCount] = useState(0);
-    const [wordCount, setWordCount] = useState(0);
+    // const [wordCount, setWordCount] = useState(0);
     const [deckCount, setDeckCount] = useState(0);
 
     const usersCollectionRef = collection(db, 'users');
@@ -42,7 +43,7 @@ const ProfilePage = () => {
                     setUsername(data.username);
                     setPracticeCount(data.practiceCount);
                     setDeckCount(data.decks.length);
-                    setWordCount(data.wordCount);
+                    // setWordCount(data.wordCount);
                     let userJoinDate = data.joinDate
                         .toDate()
                         .getDate()
@@ -59,16 +60,18 @@ const ProfilePage = () => {
     }, [userState]);
 
     return (
-        <>
-            <Stats
-                joinDate={joinDate}
-                username={username}
-                wordCount={wordCount}
-                deckCount={deckCount}
-                practiceCount={practiceCount}
-            />
-            <MainNav active="profile" />
-        </>
+        <PageTemplate page="profile" h1={username}>
+            <div style={{ gridColumn: 'span 2' }}>
+                <Stats
+                    joinDate={joinDate}
+                    username={username}
+                    // wordCount={wordCount}
+                    deckCount={deckCount}
+                    practiceCount={practiceCount}
+                />
+            </div>
+            {/* <MainNav active="profile" /> */}
+        </PageTemplate>
     );
 };
 

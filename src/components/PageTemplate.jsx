@@ -11,7 +11,7 @@ const Wrapper = styled('div')(() => ({
     padding: '16px 42px 120px 42px',
 }));
 
-const PageTemplate = ({ children, page }) => {
+const PageTemplate = ({ children, page, h1 }) => {
     return (
         <>
             <div
@@ -31,6 +31,8 @@ const PageTemplate = ({ children, page }) => {
                         gridColumn: '1 / span 2',
                         display: 'flex',
                         justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
                     }}
                 >
                     <img
@@ -42,6 +44,7 @@ const PageTemplate = ({ children, page }) => {
                             userSelect: 'none',
                         }}
                     />
+                    <h1>{h1}</h1>
                 </div>
                 {children}
             </Wrapper>

@@ -160,7 +160,7 @@ const FlashCardPage = () => {
     return (
         <>
             <CreateBtn />
-            <PageTemplate page="flashcards">
+            <PageTemplate page="flashcards" h1={'Decks'}>
                 <SearchBar />
                 {decks.length === 0 && (
                     <span style={{ gridColumn: 'span 2' }}>

@@ -9,7 +9,7 @@ const Wrapper = styled('div')(() => ({
 
 const Container = styled('div')(() => ({
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr 1fr 1fr',
+    gridTemplateColumns: '1fr 1fr',
     justifyContent: 'center',
     alignItems: 'center',
     userSelect: 'none',
@@ -38,18 +38,18 @@ const Stats = ({
     return (
         <Wrapper>
             <Container>
-                <span>IMG GOES HERE</span>
-                <span>Saved Words</span>
+                {/* <span>IMG GOES HERE</span>
+                <span>Saved Words</span> */}
                 <span>Decks</span>
                 <span>Times Practiced</span>
-                <span>
+                {/* <span>
                     {username}
                     <br />
                     Join Date: {joinDate}
-                </span>
-                <span>
+                </span> */}
+                {/* <span>
                     <span>{wordCount}</span>
-                </span>
+                </span> */}
                 <span>
                     <span>{deckCount}</span>
                 </span>
