@@ -538,7 +538,7 @@ const DeckEditPage = () => {
                             </ActionButton>
                             <ActionButton
                                 onClick={() =>
-                                    (window.location.href = `/fc/${deckRefParam}/practice`)
+                                    (window.location.href = `/fc/${deckRefParam}/practise`)
                                 }
                                 disabled={cards.length < 2 ? true : false}
                             >

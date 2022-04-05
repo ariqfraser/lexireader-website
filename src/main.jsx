@@ -19,7 +19,7 @@ ReactDOM.render(
                 <Route path="/fc" element={<FlashCardPage />} />
                 <Route path={'/fc/:deckRef'} element={<DeckEditPage />} />
                 <Route
-                    path={'/fc/:deckRef/practice'}
+                    path={'/fc/:deckRef/practise'}
                     element={<PracticePage />}
                 />
             </Routes>
