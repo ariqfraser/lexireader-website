@@ -44,11 +44,11 @@ const MainNav = ({ active = '' }) => {
                         <Icon.Flashcard />
                     </button>
                 </Link>
-                <Link to="/u">
+                {/* <Link to="/u">
                     <button>
                         <Icon.Heart />
                     </button>
-                </Link>
+                </Link> */}
                 <Link to="/u">
                     <button>
                         <Icon.User />
