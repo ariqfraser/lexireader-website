@@ -2,6 +2,8 @@ import React from 'react';
 import MainNav from './MainNav';
 import logoImg from '../assets/iconW-128.png';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
+
 const Wrapper = styled('div')(() => ({
     display: 'grid',
     gridTemplateColumns: '1fr 1fr',
@@ -35,15 +37,17 @@ const PageTemplate = ({ children, page, h1 }) => {
                         flexDirection: 'column',
                     }}
                 >
-                    <img
-                        src={logoImg}
-                        alt={'lexireader logo'}
-                        width="44"
-                        style={{
-                            filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.2))',
-                            userSelect: 'none',
-                        }}
-                    />
+                    <Link to={'/'} aria-label="Go to home">
+                        <img
+                            src={logoImg}
+                            alt={'lexireader logo'}
+                            width="44"
+                            style={{
+                                filter: 'drop-shadow(0px 0px 5px rgba(0,0,0,0.2))',
+                                userSelect: 'none',
+                            }}
+                        />
+                    </Link>
                     <h1>{h1}</h1>
                 </div>
                 {children}

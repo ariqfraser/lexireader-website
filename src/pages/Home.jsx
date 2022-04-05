@@ -14,12 +14,10 @@ const Home = () => {
         if (userState) console.log(userState);
     }, [userState]);
 
-    useEffect(() => {}, []);
-
     return (
         <>
             <Nav screen={'home'} />
-            <PageWrapper>
+            <PageWrapper className="homeWrapper">
                 <HomeSection screen={'home'}>
                     <h1>
                         <span>Lexi</span>Reader, a browser extension.

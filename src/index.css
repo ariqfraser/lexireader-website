@@ -28,3 +28,31 @@ h1 {
     padding-top: 20px;
     font-weight: 500;
 }
+
+@media (max-width: 1000px) {
+    /* Styles */
+    .homeWrapper {
+        grid-template-columns: 1fr;
+        grid-template-rows: 50vh;
+    }
+
+    .homeRightSide {
+        height: 50vh;
+    }
+
+    .navButton {
+        border-color: var(--b) !important;
+        color: var(--b) !important;
+    }
+}
+
+@media (min-width: 1000px) {
+    /* Styles */
+    .homeWrapper {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 100vh;
+    }
+    .homeRightSide {
+        height: 100vh;
+    }
+}

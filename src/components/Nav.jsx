@@ -43,16 +43,19 @@ const Nav = ({ screen }) => {
                 <>
                     hello, {userState.displayName}
                     <Button
+                        className="navButton"
                         isType="outlined"
                         bg="white"
                         textColor="#fafafa"
                         onClick={() => logout()}
+                        style={{ marginLeft: 8 }}
                     >
                         logout
                     </Button>
                 </>
             ) : (
                 <Button
+                    className="navButton"
                     isType="outlined"
                     bg="white"
                     textColor="#fafafa"
