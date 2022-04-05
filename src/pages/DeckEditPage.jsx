@@ -493,12 +493,12 @@ const DeckEditPage = () => {
                             <p>{title}</p>
                             <SubTitle>
                                 Cards: {cardCount}
-                                &nbsp;&nbsp;&nbsp;&nbsp;Practiced:{' '}
+                                &nbsp;&nbsp;&nbsp;&nbsp;Practised:{' '}
                                 {practiceCount}
                             </SubTitle>
                         </Box>
                         <Box color="var(--b)" bg="#fafafa">
-                            <Title>Times Practiced</Title>
+                            <Title>Times Practised</Title>
 
                             <StatText>{practiceCount}</StatText>
                         </Box>
@@ -542,7 +542,7 @@ const DeckEditPage = () => {
                                 }
                                 disabled={cards.length < 2 ? true : false}
                             >
-                                Practice
+                                Practise
                             </ActionButton>
                         </ActionWrapper>
                     </>

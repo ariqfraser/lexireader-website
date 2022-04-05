@@ -184,7 +184,7 @@ const FlashCardPage = () => {
                                         Cards: {v['data']['cardCount']}
                                     </SubTitle>
                                     <SubTitle key={`prac${i}`}>
-                                        practiced: {v['data']['practiceCount']}
+                                        practised: {v['data']['practiceCount']}
                                     </SubTitle>
                                     <Footer key={`f${i}`}>click to view</Footer>
                                 </Box>
@@ -205,7 +205,7 @@ const FlashCardPage = () => {
                                     Cards: {v['data']['cardCount']}
                                 </SubTitle>
                                 <SubTitle key={`prac${i}`}>
-                                    practiced: {v['data']['practiceCount']}
+                                    practised: {v['data']['practiceCount']}
                                 </SubTitle>
                                 <Footer key={`f${i}`}>click to view</Footer>
                             </Box>

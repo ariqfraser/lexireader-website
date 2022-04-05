@@ -41,7 +41,7 @@ const Stats = ({
                 {/* <span>IMG GOES HERE</span>
                 <span>Saved Words</span> */}
                 <span>Decks</span>
-                <span>Times Practiced</span>
+                <span>Times Practised</span>
                 {/* <span>
                     {username}
                     <br />
