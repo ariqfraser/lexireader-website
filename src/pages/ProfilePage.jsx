@@ -3,7 +3,13 @@ import Stats from '../components/Stats';
 import { useEffect, useState } from 'react';
 import MainNav from '../components/MainNav';
 import { getAuthState } from '../lib/authState';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import {
+    collection,
+    collectionGroup,
+    getDocs,
+    query,
+    where,
+} from 'firebase/firestore';
 import { db } from '../lib/init-firebase';
 import PageTemplate from '../components/PageTemplate';
 
@@ -41,8 +47,7 @@ const ProfilePage = () => {
                 .then((doc) => {
                     const data = doc[0].data;
                     setUsername(data.username);
-                    setPracticeCount(data.practiceCount);
-                    setDeckCount(data.decks.length);
+
                     // setWordCount(data.wordCount);
                     let userJoinDate = data.joinDate
                         .toDate()
@@ -55,6 +60,19 @@ const ProfilePage = () => {
                     setJoinDate(userJoinDate);
                 })
                 .catch((err) => console.log(err.message));
+
+            const deckksRef = collection(db, 'decks');
+            const q = query(deckksRef, where('user', '==', email));
+            getDocs(q)
+                .then((data) => {
+                    setDeckCount(data.docs.length);
+                    let totalPrac = 0;
+                    data.docs.map((v) => {
+                        totalPrac += v.data().practiceCount;
+                    });
+                    return totalPrac;
+                })
+                .then(setPracticeCount);
         };
         if (userState) getUserData();
     }, [userState]);
